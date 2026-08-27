@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --kumkum: #B4271F;
+    --haldi: #DFA327;
+    --gerua: #C0602A;
+    --lac: #7C1E13;
+    --mehendi: #5F6E36;
+    --neel: #22364E;
+    --tamba: #9C5A2D;
+    --sona: #B5872B;
+    --kaath: #F1E3CB;   /* paper base */
+    --chandan: #DCC9A6;
+    --kajal: #231C17;   /* ink, never #000 */
+    --chandi: #C7C3BA;
+    --safed: #FBF6EA;   /* never #FFF */
+
+    --font-display: 'Yatra One', 'Martel', serif;
+    --font-hand: 'Kalam', cursive;
+    --font-body: 'Martel', serif;
+    --font-util: 'Khand', sans-serif;
+  }
+
+  body {
+    background-color: var(--kaath);
+    color: var(--kajal);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-hand {
+    font-family: var(--font-hand);
+  }
+
+  .font-util {
+    font-family: var(--font-util);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+}
+
+/* Authentic Paper Grain Background */
+.paper-grain {
+  background-color: #F1E3CB;
+  background-image: radial-gradient(#DCC9A6 0.75px, transparent 0.75px), radial-gradient(#DCC9A6 0.75px, #F1E3CB 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.paper-card {
+  background-color: #FBF6EA;
+  box-shadow: 2px 3px 0px rgba(35, 28, 23, 0.08);
+}
+
+/* 3D Physical Elevation & Tactile Depth */
+.btn-3d {
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 4px 0 #231C17, 0 6px 12px rgba(35, 28, 23, 0.15);
+}
+
+.btn-3d:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #231C17, 0 8px 16px rgba(35, 28, 23, 0.2);
+}
+
+.btn-3d:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #231C17, 0 2px 4px rgba(35, 28, 23, 0.2);
+}
+
+.btn-3d-gold {
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  background: linear-gradient(180deg, #FBF6EA 0%, #F1E3CB 100%);
+  border: 2px solid #231C17;
+  box-shadow: 0 3px 0 #9C5A2D, 0 5px 10px rgba(35, 28, 23, 0.12);
+}
+
+.btn-3d-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #9C5A2D, 0 7px 14px rgba(35, 28, 23, 0.18);
+}
+
+.btn-3d-gold:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #9C5A2D, 0 2px 4px rgba(35, 28, 23, 0.15);
+}
+
+/* 3D Spatial Transforms */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+
+/* Floating 3D Bobbing Keyframe */
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg) translateZ(12px);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 4s ease-in-out infinite;
+}
+
+@keyframes diyaFlicker {
+  0%, 100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 12px rgba(255, 180, 50, 0.6));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(255, 210, 80, 0.9));
+  }
+}
+
+.animate-diya-glow {
+  animation: diyaFlicker 2.5s ease-in-out infinite;
+}
+
+/* Touch & Focus adjustments */
+button, a, input, textarea {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px dashed #B4271F;
+  outline-offset: 3px;
+}
+
+/* Custom scrollbars that match the brass/ink vibe */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1E3CB;
+}
+::-webkit-scrollbar-thumb {
+  background: #DCC9A6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C0602A;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

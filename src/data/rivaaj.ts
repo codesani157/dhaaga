@@ -1,0 +1,167 @@
+import { RivaajInfo } from '../types';
+
+export interface RivaajTradition {
+  id: number;
+  title_hi: string;
+  title_en: string;
+  subtitle_hi?: string;
+  subtitle_en?: string;
+  region: string;
+  when_hi: string;
+  when_en: string;
+  desc_hi: string;
+  desc_en: string;
+  ritual_hi: string;
+  ritual_en: string;
+  provenance: string;
+}
+
+export const RIVAAJ_TRADITIONS: RivaajTradition[] = [
+  {
+    id: 0,
+    title_hi: 'लूंबा राखी (राजस्थान व मारवाड़ी परंपरा)',
+    title_en: 'Lumba Rakhi (Bhabhi Bangle)',
+    subtitle_hi: 'भाभी की चूड़ी पर लटकन वाला रक्षासूत्र',
+    subtitle_en: 'Hanging silk & mirror charm tied to sister-in-law’s bangle',
+    region: 'राजस्थान व गुजरात (Marwar & Shekhawati)',
+    when_hi: 'श्रावण पूर्णिमा',
+    when_en: 'Shravana Purnima',
+    desc_hi: 'मारवाड़ी संस्कृति में भाई के साथ-साथ भाभी की चूड़ी (चूड़ा) पर लूंबा बांधा जाता है। यह मान्यता है कि विवाह के बाद भाई की सुरक्षा, घर की सुख-शांति और परिवार की डोर भाभी के हाथों में ही होती है।',
+    desc_en: 'In Marwari and Rajasthani tradition, sisters tie a Lumba to their brother’s wife (Bhabhi) on her chooda. It honors the sister-in-law as the guardian of domestic harmony and family lineage.',
+    ritual_hi: 'लूंबा में रेशम के लच्छे, कसीदाकारी, शीशे और छोटी घंटियां (घुंघरू) लटकाई जाती हैं। इसे कलाई पर नहीं, बल्कि कांच की चूड़ी के नीचे लटकाया जाता है।',
+    ritual_en: 'Crafted with silk tassels, zardozi embroidery, tiny mirrors, and ghungroo bells, suspended gracefully from the wrist bangle.',
+    provenance: 'राजस्थान लोक-संस्कृति व मारवाड़ी पारिवारिक परंपराएं',
+  },
+  {
+    id: 1,
+    title_hi: 'नारली पूर्णिमा (कोंकण व कोली मछुआरा उत्सव)',
+    title_en: 'Narali Purnima (Ocean Offering)',
+    subtitle_hi: 'समुद्र देवता को स्वर्ण/नारियल की भेंट',
+    subtitle_en: 'Offering golden coconuts to Lord Varuna to calm the monsoon seas',
+    region: 'महाराष्ट्र, गोवा व कोंकण तट',
+    when_hi: 'श्रावण पूर्णिमा (मानसून का समापन)',
+    when_en: 'Shravana Purnima (End of Monsoon Swells)',
+    desc_hi: 'कोंकण और मुंबई के कोली मछुआरे श्रावण पूर्णिमा पर समुद्र देवता (वरुण) को श्रीफल (नारियल) अर्पित करते हैं। मानसून के उग्र ज्वार-भाटे के बाद समुद्र शांत होता है और नई मछली पकड़ने की नौकाएं जल में उतारी जाती हैं।',
+    desc_en: 'Koli fishing communities along the Konkan coast offer decorated coconuts to Lord Varuna (the sea deity) to calm rough monsoon waves and bless boats resuming deep-sea voyages.',
+    ritual_hi: 'नावों को रंगों और पताकाओं से सजाया जाता है। समुद्र में नारियल विसर्जन के बाद नारियल भात (Narali Bhaat) और करंजी बनाई जाती है।',
+    ritual_en: 'Boats are painted with auspicious motifs, and families cook sweet coconut rice (Narali Bhaat) as prasad.',
+    provenance: 'कोंकण कोली समुदाय व समुद्री तटीय लोक-साहित्य',
+  },
+  {
+    id: 2,
+    title_hi: 'झूलन यात्रा व रवींद्रनाथ ठाकुर की राखी (बंगाल)',
+    title_en: 'Jhulan Yatra & Tagore’s Rakhi (Bengal)',
+    subtitle_hi: 'राधा-कृष्ण झूला व १९०५ का ऐतिहासिक एकता रक्षाबंधन',
+    subtitle_en: 'Radha-Krishna swing festival and Tagore’s 1905 anti-partition unity bond',
+    region: 'पश्चिम बंगाल व ओडिशा',
+    when_hi: 'श्रावण शुक्ल एकादशी से पूर्णिमा',
+    when_en: 'Shravana Shukla Ekadashi to Purnima',
+    desc_hi: 'बंगाल में यह दिन झूलन यात्रा के रूप में मनाया जाता है। १९०५ में जब अंग्रेजों ने बंगाल विभाजन की घोषणा की, तब गुरुदेव रवींद्रनाथ ठाकुर ने हिंदू-मुस्लिम एकता के लिए गंगा किनारे लाखों लोगों को रक्षासूत्र बांधने का आह्वान किया था।',
+    desc_en: 'Celebrated as Jhulan Yatra for Radha-Krishna. In 1905, to resist the British partition of Bengal, Rabindranath Tagore transformed Rakhi into a political and communal unity bond across the Ganga.',
+    ritual_hi: 'मंदिरों में रेशम और फूलों के झूले सजाए जाते हैं। लाल-पीले सूती धागे हर नागरिक को सद्भाव और भाईचारे के प्रतीक के रूप में बांधे जाते हैं।',
+    ritual_en: 'Temples arrange swing pavilions for the deities while red and gold cotton threads are exchanged as symbols of solidarity.',
+    provenance: 'शांतिनिकेतन ऐतिहासिक दस्तावेज व गौड़ीय वैष्णव परंपरा',
+  },
+  {
+    id: 3,
+    title_hi: 'सलोनो (हरियाणा, पंजाब व पश्चिमी उप्र)',
+    title_en: 'Salono (Ear of Barley Tradition)',
+    subtitle_hi: 'कान के पीछे जौ की बालियां और नेग',
+    subtitle_en: 'Barley shoots tucked behind the ear for prosperity and protection',
+    region: 'हरियाणा, पंजाब व पश्चिमी उत्तर प्रदेश',
+    when_hi: 'श्रावण पूर्णिमा (सलोने)',
+    when_en: 'Shravana Purnima',
+    desc_hi: 'ग्रामीण उत्तर भारत में रक्षाबंधन को "सलोनो" कहा जाता है। बहनें और पुरोहित घर के सदस्यों के कान के पीछे नई उगी जौ (Salono/Jau) की हरी बालियां खोंसते हैं और सुख-समृद्धि का आशीर्वाद देते हैं।',
+    desc_en: 'In rural northern agrarian culture, known as Salono. Sisters tuck freshly sprouted green barley shoots behind their brothers’ ears as an omen of bumper harvests and longevity.',
+    ritual_hi: 'मिट्टी के कुल्हड़ में उगाई गई जौ की हरी बालियां तोड़ी जाती हैं, रोली का टीका लगता है और गुड़-रोटी का नेग दिया जाता है।',
+    ritual_en: 'Barley shoots grown in clay pots are gathered, tilak applied, and jaggery delicacies offered.',
+    provenance: 'कृषि लोक-संस्कृति व ग्रामीण ऋतु-गीत',
+  },
+  {
+    id: 4,
+    title_hi: 'गमहा पूर्णिमा (ओडिशा)',
+    title_en: 'Gamha Purnima (Cattle & Balabhadra Worship)',
+    subtitle_hi: 'भगवान बलभद्र और गोवंश का सम्मान',
+    subtitle_en: 'Birthday of Lord Balabhadra & veneration of agricultural cattle',
+    region: 'ओडिशा (Utkala Desha)',
+    when_hi: 'श्रावण पूर्णिमा',
+    when_en: 'Shravana Purnima',
+    desc_hi: 'ओडिशा में यह दिन भगवान जगन्नाथ के बड़े भाई बलभद्र (हलधर - कृषि के देव) का जन्मोत्सव है। इस दिन हल, बैल और गायों को नहलाकर उनके सींगों पर हल्दी और सुंदर रेशमी राखियां (गमहा) बांधी जाती हैं।',
+    desc_en: 'Celebrates the birth of Lord Balabhadra (the deity of agriculture with the plough). Cattle and bulls are bathed, anointed with turmeric paste, and decorated with Gamha rakhis around horns.',
+    ritual_hi: 'गायों को पीठा (Pitha) खिलाया जाता है और मिट्टी की वेदी बनाकर गमहा की छलांग (Gamha Diyan) का पारंपरिक खेल खेला जाता है।',
+    ritual_en: 'Cows are fed fresh Chakuli and Enduri Pithas, and youth participate in the traditional high-jump sport Gamha Diyan.',
+    provenance: 'ओडिशा जगन्नाथ संस्कृति व उत्कल लोक-पर्व',
+  },
+  {
+    id: 5,
+    title_hi: 'पवित्रोपण (गुजरात)',
+    title_en: 'Pavitropana (Shiva Cotton Offering)',
+    subtitle_hi: 'पंचामृत में भीगे सूत की माला',
+    subtitle_en: 'Sacred cotton thread soaked in panchamrut offered to Lord Shiva',
+    region: 'गुजरात व सौराष्ट्र',
+    when_hi: 'श्रावण पूर्णिमा',
+    when_en: 'Shravana Purnima',
+    desc_hi: 'गुजरात में सावन के महीने में शिवजी को पंचामृत में डुबोया हुआ कच्चा सूत (पवित्रक) अर्पित करने की परंपरा है। यह वर्ष भर की साधना और शुद्धि का प्रतीक है।',
+    desc_en: 'In Gujarat, devotees twist virgin raw cotton yarn into garlands, dip them in milk, ghee, curd, honey, and gangajal, and crown the Shiva Lingam on Shravana Purnima.',
+    ritual_hi: 'कपास के धागों में गांठें लगाकर उन पर केसर-हल्दी का लेप किया जाता है और शिवलिंग पर चढ़ाया जाता है।',
+    ritual_en: 'Multi-stranded cotton threads with sacred knots are anointed with saffron and turmeric paste.',
+    provenance: 'गुजराती वैष्णव व शैव धार्मिक संहिताएं',
+  },
+  {
+    id: 6,
+    title_hi: 'कजरी पूर्णिमा (बुंदेलखंड व मध्य भारत)',
+    title_en: 'Kajari Purnima (Wheat Seedling Ritual)',
+    subtitle_hi: 'पुत्र-पुत्रियों की दीर्घायु और कजरी विसर्जन',
+    subtitle_en: 'Sowing wheat shoots in leaf cups and immersion blessings',
+    region: 'बुंदेलखंड, मध्य प्रदेश व विंध्य अंचल',
+    when_hi: 'श्रावण नवमी से पूर्णिमा',
+    when_en: 'Shravana Navami to Purnima',
+    desc_hi: 'बुंदेलखंड में महिलाएं नवमी के दिन पत्तों के दोने में मिट्टी भरकर जौ-गेहूं बोती हैं, जिसे कजरी कहते हैं। पूर्णिमा के दिन कजरी को सिर पर रखकर गाते हुए नदी में विसर्जन किया जाता है और भाइयों को आशीर्वाद दिया जाता है।',
+    desc_en: 'Women in Bundelkhand sow wheat seedlings in leaf cups on Shravana Navami. On Purnima day, they carry these sprouts on their heads to rivers, singing Kajari folk ballads for sibling longevity.',
+    ritual_hi: 'महिलाएं कजरी लोकगीत गाती हैं, नदी से लौटकर भाइयों के कानों में हरी कजरी खोंसती हैं और भाई उन्हें शगुन देते हैं।',
+    ritual_en: 'Immersion of sprout cups in local rivers followed by gifting green shoots to siblings.',
+    provenance: 'बुंदेली लोक-संस्कृति व विंध्य लोकगीत परंपरा',
+  },
+  {
+    id: 7,
+    title_hi: 'राखी द्विज व भाई दूज सातत्य (अखिल भारतीय)',
+    title_en: 'Rakhi Dwij & Sibling Continuum',
+    subtitle_hi: 'सावन की पूर्णिमा से कार्तिक के भाई दूज का चक्र',
+    subtitle_en: 'The unbroken arc from Shravana monsoon thread to Kartik Yama Dwitiya',
+    region: 'अखिल भारतीय (Pan-India)',
+    when_hi: 'सावन पूर्णिमा एवं कार्तिक शुक्ल द्वितीया',
+    when_en: 'Shravana Purnima to Kartik Dwitiya',
+    desc_hi: 'रक्षाबंधन अकेला पर्व नहीं है, बल्कि भाई-बहन के प्रेम के चक्र का प्रारंभ है जो दिवाली के बाद भाई दूज (यम द्वितीया) पर पूर्ण होता है। सावन में बहन धागा बांधती है, कार्तिक में बहन भाई की दीर्घायु के लिए यमराज से प्रार्थना करती है।',
+    desc_en: 'Raksha Bandhan is the first node of an annual reciprocal loop completed during Bhai Dooj (Yama Dwitiya) after Diwali, honoring the eternal bond of Yama and Yami.',
+    ritual_hi: 'थाल, रोली, सुपारी और सूखे मेवे की भेंट के साथ दोनों त्योहारों का गहरा आध्यात्मिक संबंध है।',
+    ritual_en: 'Deep ritual connection marked by coconut, betel nut, and ceremonial prayers.',
+    provenance: 'पौराणिक यम-यमी आख्यान व शास्त्रीय परंपरा',
+  },
+  {
+    id: 8,
+    title_hi: 'संस्कृत दिवस व उपाकर्म (वैदिक परंपरा)',
+    title_en: 'Sanskrit Diwas & Upakarma (Vedic Renewal)',
+    subtitle_hi: 'यज्ञोपवीत (जनेऊ) का नवीनीकरण व स्वाध्याय संकल्प',
+    subtitle_en: 'Sacred thread renewal and self-study dedication on Shravana Purnima',
+    region: 'अखिल भारतीय (Pan-India)',
+    when_hi: 'श्रावण पूर्णिमा (संस्कृत दिवस)',
+    when_en: 'Shravana Purnima',
+    desc_hi: 'श्रावण पूर्णिमा को विश्व संस्कृत दिवस के रूप में भी मनाया जाता है। इसी दिन वैदिक परंपरा में उपाकर्म (यज्ञोपवीत बदलने की रस्म) होती है, जहां ज्ञान, सत्य और समाज के प्रति निष्ठा का नया सूत्र धारण किया जाता है।',
+    desc_en: 'Shravana Purnima is also World Sanskrit Day. In Vedic traditions, this day marks Upakarma / Avani Avittam, where scholars and householders renew their sacred threads and rededicate themselves to truth and study.',
+    ritual_hi: 'नदी या जलाशय तट पर तर्पण, गायत्री मंत्र का जप और नूतन यज्ञोपवीत धारण किया जाता है।',
+    ritual_en: 'Ritual ablutions, chanting of Gayatri mantra, and renewal of the three-fold cotton thread.',
+    provenance: 'वैदिक गृह्यसूत्र व संस्कृत साहित्य परंपरा',
+  },
+];
+
+export const RIVAAJ_LIST: RivaajInfo[] = RIVAAJ_TRADITIONS.map((t) => ({
+  id: t.id,
+  title_hi: t.title_hi,
+  title_en: t.title_en,
+  region: t.region,
+  desc_hi: t.desc_hi,
+  desc_en: t.desc_en,
+  offering: 'रोली-अक्षत व पवित्र सूत्र',
+  default_dori: t.id % 12,
+  default_sweet: t.id % 24,
+}));

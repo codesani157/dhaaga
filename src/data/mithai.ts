@@ -1,0 +1,28 @@
+import { MithaiInfo } from '../types';
+
+export const MITHAI_LIST: MithaiInfo[] = [
+  { id: 0, name_hi: 'बेसन के लड्डू', name_en: 'Besan Laddoo', region: 'North / Central', color: '#DFA327', accent: '#B5872B', shape: 'circle' },
+  { id: 1, name_hi: 'मथुरा का पेड़ा', name_en: 'Mathura Peda', region: 'Uttar Pradesh', color: '#9C5A2D', accent: '#DCC9A6', shape: 'circle' },
+  { id: 2, name_hi: 'काजू कतली', name_en: 'Kaju Katli', region: 'All India', color: '#FBF6EA', accent: '#C7C3BA', shape: 'diamond' },
+  { id: 3, name_hi: 'रसगुल्ला', name_en: 'Rasgulla', region: 'Bengal / Odisha', color: '#FBF6EA', accent: '#F1E3CB', shape: 'circle' },
+  { id: 4, name_hi: 'सोंदेश', name_en: 'Sandesh', region: 'Bengal', color: '#FBF6EA', accent: '#DFA327', shape: 'square' },
+  { id: 5, name_hi: 'मैसूर पाक', name_en: 'Mysore Pak', region: 'Karnataka / South', color: '#DFA327', accent: '#9C5A2D', shape: 'square' },
+  { id: 6, name_hi: 'राजस्थानी घेवर', name_en: 'Ghevar', region: 'Rajasthan', color: '#DFA327', accent: '#B4271F', shape: 'ring' },
+  { id: 7, name_hi: 'उकडीचे मोदक', name_en: 'Ukadiche Modak', region: 'Maharashtra', color: '#FBF6EA', accent: '#DFA327', shape: 'oval' },
+  { id: 8, name_hi: 'कुरकुरी जलेबी', name_en: 'Jalebi', region: 'North / West', color: '#C0602A', accent: '#DFA327', shape: 'spiral' },
+  { id: 9, name_hi: 'मालपुआ', name_en: 'Malpua', region: 'Bihar / Rajasthan', color: '#9C5A2D', accent: '#DFA327', shape: 'circle' },
+  { id: 10, name_hi: 'पातिशाप्ता', name_en: 'Patishapta', region: 'Bengal', color: '#DCC9A6', accent: '#5F6E36', shape: 'oval' },
+  { id: 11, name_hi: 'नारियल बर्फी', name_en: 'Coconut Barfi', region: 'Coastal / Konkan', color: '#FBF6EA', accent: '#5F6E36', shape: 'diamond' },
+  { id: 12, name_hi: 'इमरती', name_en: 'Imarti', region: 'North India', color: '#B4271F', accent: '#C0602A', shape: 'spiral' },
+  { id: 13, name_hi: 'रसमलाई', name_en: 'Rasmalai', region: 'North / East', color: '#FBF6EA', accent: '#DFA327', shape: 'circle' },
+  { id: 14, name_hi: 'बालूशाही', name_en: 'Balushahi', region: 'North / Bihar', color: '#DFA327', accent: '#9C5A2D', shape: 'ring' },
+  { id: 15, name_hi: 'पिन्नी', name_en: 'Pinni', region: 'Punjab', color: '#7A5030', accent: '#DCC9A6', shape: 'circle' },
+  { id: 16, name_hi: 'अधिरसम', name_en: 'Adhirasam', region: 'Tamil Nadu', color: '#7A5030', accent: '#9C5A2D', shape: 'circle' },
+  { id: 17, name_hi: 'श्रीखंड कटोरी', name_en: 'Shrikhand', region: 'Gujarat / Maharashtra', color: '#DFA327', accent: '#B4271F', shape: 'circle' },
+  { id: 18, name_hi: 'छेना पोड़', name_en: 'Chhena Poda', region: 'Odisha', color: '#9C5A2D', accent: '#DFA327', shape: 'square' },
+  { id: 19, name_hi: 'सोहन हलवा', name_en: 'Sohan Halwa', region: 'Punjab / Delhi', color: '#7A5030', accent: '#DFA327', shape: 'circle' },
+  { id: 20, name_hi: 'गुझिया / करंजी', name_en: 'Gujiya / Karanji', region: 'North / Central', color: '#DFA327', accent: '#C0602A', shape: 'oval' },
+  { id: 21, name_hi: 'ठेकुआ', name_en: 'Thekua', region: 'Bihar / Purvanchal', color: '#7A5030', accent: '#9C5A2D', shape: 'oval' },
+  { id: 22, name_hi: 'अलवर का कलाकंद', name_en: 'Kalakand', region: 'Rajasthan', color: '#FBF6EA', accent: '#DCC9A6', shape: 'square' },
+  { id: 23, name_hi: 'मोतीचूर के लड्डू', name_en: 'Motichoor Laddoo', region: 'All India', color: '#C0602A', accent: '#DFA327', shape: 'circle' },
+];
