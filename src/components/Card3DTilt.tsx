@@ -40,13 +40,23 @@ export const Card3DTilt: React.FC<Card3DTiltProps> = ({
 
   // Smooth lerp animation loop for organic spring physics
   useEffect(() => {
+    let lastX = 0;
+    let lastY = 0;
+
     const loop = () => {
       const k = 0.14; // Lerp stiffness
       currentRotRef.current.x += (targetRotRef.current.x - currentRotRef.current.x) * k;
       currentRotRef.current.y += (targetRotRef.current.y - currentRotRef.current.y) * k;
 
-      setRotX(currentRotRef.current.x);
-      setRotY(currentRotRef.current.y);
+      const diffX = Math.abs(currentRotRef.current.x - lastX);
+      const diffY = Math.abs(currentRotRef.current.y - lastY);
+
+      if (diffX > 0.02 || diffY > 0.02) {
+        lastX = currentRotRef.current.x;
+        lastY = currentRotRef.current.y;
+        setRotX(lastX);
+        setRotY(lastY);
+      }
 
       animFrameRef.current = requestAnimationFrame(loop);
     };

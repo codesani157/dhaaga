@@ -16,26 +16,33 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
   const [pastedLink, setPastedLink] = useState('');
   const [showPasteModal, setShowPasteModal] = useState(false);
   const isDragging = useRef(false);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [currentPointerPos, setCurrentPointerPos] = useState<{ x: number; y: number } | null>(null);
 
-  // Kolam dot coordinates (symmetric 3x3 pulli grid)
+  // Kolam dot coordinates (symmetric 3x3 pulli grid on 300x200 canvas)
   const dots = [
-    { id: 0, x: 100, y: 50 },
-    { id: 1, x: 150, y: 50 },
-    { id: 2, x: 200, y: 50 },
-    { id: 3, x: 100, y: 100 },
+    { id: 0, x: 75, y: 45 },
+    { id: 1, x: 150, y: 45 },
+    { id: 2, x: 225, y: 45 },
+    { id: 3, x: 75, y: 100 },
     { id: 4, x: 150, y: 100 },
-    { id: 5, x: 200, y: 100 },
-    { id: 6, x: 100, y: 150 },
-    { id: 7, x: 150, y: 150 },
-    { id: 8, x: 200, y: 150 },
+    { id: 5, x: 225, y: 100 },
+    { id: 6, x: 75, y: 155 },
+    { id: 7, x: 150, y: 155 },
+    { id: 8, x: 225, y: 155 },
   ];
 
   const handleDotTouch = (dotId: number) => {
-    if (!kolamConnected.includes(dotId)) {
-      const next = [...kolamConnected, dotId];
-      setKolamConnected(next);
+    setKolamConnected((prev) => {
+      if (prev.includes(dotId)) return prev;
+      const next = [...prev, dotId];
       // Play sequential Indian classical Sitar note
       audio.playSitar(undefined, true);
+      try {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate(20);
+        }
+      } catch {}
 
       // Check if user connected enough dots to complete the auspicious loop
       if (next.length >= 5) {
@@ -44,7 +51,52 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
         audio.playGhungroo(1.2);
         setIsOpen(true);
       }
+      return next;
+    });
+  };
+
+  const getSvgCoords = (clientX: number, clientY: number) => {
+    if (!svgRef.current) return null;
+    const rect = svgRef.current.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    const x = ((clientX - rect.left) / rect.width) * 300;
+    const y = ((clientY - rect.top) / rect.height) * 200;
+    return { x: Math.max(0, Math.min(300, x)), y: Math.max(0, Math.min(200, y)) };
+  };
+
+  const checkDotIntersection = (x: number, y: number) => {
+    // 44px generous hit radius
+    for (const dot of dots) {
+      const dist = Math.hypot(dot.x - x, dot.y - y);
+      if (dist <= 44) {
+        handleDotTouch(dot.id);
+        break;
+      }
     }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    isDragging.current = true;
+    const coords = getSvgCoords(e.clientX, e.clientY);
+    if (coords) {
+      setCurrentPointerPos(coords);
+      checkDotIntersection(coords.x, coords.y);
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    const coords = getSvgCoords(e.clientX, e.clientY);
+    if (!coords) return;
+
+    if (isDragging.current) {
+      setCurrentPointerPos(coords);
+      checkDotIntersection(coords.x, coords.y);
+    }
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
+    setCurrentPointerPos(null);
   };
 
   const handleDirectEnter = () => {
@@ -62,12 +114,12 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[80vh] perspective-1200">
-      {/* Threshold / Chaukhat Container with 3D Tilt & Lighting */}
+      {/* Threshold / Chaukhat Container (Tilt activated once opened) */}
       <Card3DTilt
-        maxTilt={5}
+        maxTilt={isOpen ? 5 : 0}
         perspective={1200}
-        scaleHover={1.01}
-        enableGlare={true}
+        scaleHover={isOpen ? 1.01 : 1.0}
+        enableGlare={isOpen}
         className="w-full max-w-xl"
       >
         <div className="w-full bg-[#FBF6EA] border-2 border-[#231C17] p-6 sm:p-8 rounded-sm shadow-[5px_5px_0px_#231C17] relative transition-all duration-700">
@@ -103,20 +155,44 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
               <p className="text-xs text-[#7C1E13] font-serif mb-3 font-semibold animate-pulse">
                 {lang === 'hi'
                   ? 'देहली पर कोलम का फेरा पूरा करो (बिंदुओं को जोड़ें):'
-                  : 'Complete the threshold kolam loop (drag through the dots):'}
+                  : 'Complete the threshold kolam loop (drag or click the dots):'}
               </p>
 
-              <div
-                className="relative w-[300px] h-[200px] border border-dashed border-[#B5872B] bg-[#F1E3CB]/60 rounded-xs touch-none select-none flex items-center justify-center shadow-inner"
-                onPointerDown={() => {
-                  isDragging.current = true;
-                }}
-                onPointerUp={() => {
-                  isDragging.current = false;
-                }}
-                id="threshold-kolam-canvas"
-              >
-                <svg className="w-full h-full pointer-events-none">
+              {/* Kolam SVG Canvas (Direct Hardware Coordinates) */}
+              <div className="relative flex flex-col items-center">
+                <svg
+                  ref={svgRef}
+                  viewBox="0 0 300 200"
+                  className="w-[300px] h-[200px] border border-dashed border-[#B5872B] bg-[#F1E3CB]/70 rounded-xs touch-none select-none shadow-inner cursor-crosshair overflow-visible"
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onPointerLeave={handlePointerUp}
+                  onPointerCancel={handlePointerUp}
+                  id="threshold-kolam-canvas"
+                >
+                  {/* Background grid guide lines (subtle sacred geometry) */}
+                  <line x1="75" y1="45" x2="225" y2="45" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+                  <line x1="75" y1="100" x2="225" y2="100" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+                  <line x1="75" y1="155" x2="225" y2="155" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+                  <line x1="75" y1="45" x2="75" y2="155" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+                  <line x1="150" y1="45" x2="150" y2="155" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+                  <line x1="225" y1="45" x2="225" y2="155" stroke="#DFA327" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.4" />
+
+                  {/* Dynamic live dragging line to cursor/finger */}
+                  {kolamConnected.length > 0 && currentPointerPos && isDragging.current && (
+                    <line
+                      x1={dots[kolamConnected[kolamConnected.length - 1]].x}
+                      y1={dots[kolamConnected[kolamConnected.length - 1]].y}
+                      x2={currentPointerPos.x}
+                      y2={currentPointerPos.y}
+                      stroke="#DFA327"
+                      strokeWidth="3"
+                      strokeDasharray="4 4"
+                      strokeLinecap="round"
+                    />
+                  )}
+
                   {/* Connected strokes */}
                   {kolamConnected.length > 1 && (
                     <path
@@ -125,36 +201,74 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
                         return idx === 0 ? `M ${dot.x} ${dot.y}` : `${acc} L ${dot.x} ${dot.y}`;
                       }, '')}
                       stroke="#B4271F"
-                      strokeWidth="3.5"
+                      strokeWidth="4.5"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   )}
-                </svg>
 
-                {/* Dot targets */}
-                {dots.map((d) => (
+                  {/* Dot Elements with generous touch targets */}
+                  {dots.map((d) => {
+                    const isConnected = kolamConnected.includes(d.id);
+                    return (
+                      <g
+                        key={d.id}
+                        className="cursor-pointer"
+                        onPointerEnter={() => {
+                          if (isDragging.current) {
+                            handleDotTouch(d.id);
+                          }
+                        }}
+                      >
+                        {/* Invisible 56px hitbox circle */}
+                        <circle cx={d.x} cy={d.y} r="28" fill="transparent" />
+
+                        {/* Outer Glow Ring if connected */}
+                        {isConnected && (
+                          <circle
+                            cx={d.x}
+                            cy={d.y}
+                            r="12"
+                            fill="none"
+                            stroke="#DFA327"
+                            strokeWidth="3"
+                            className="animate-pulse"
+                          />
+                        )}
+
+                        {/* Visible Dot Core */}
+                        <circle
+                          cx={d.x}
+                          cy={d.y}
+                          r={isConnected ? 8 : 6}
+                          fill={isConnected ? '#B4271F' : '#7C1E13'}
+                          stroke={isConnected ? '#FFF2B2' : '#B5872B'}
+                          strokeWidth="1.5"
+                        />
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+
+              {/* Progress counter */}
+              <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-[#7A5030]">
+                <span>{lang === 'hi' ? 'प्रगति:' : 'Progress:'}</span>
+                <span className="font-bold text-[#B4271F]">{kolamConnected.length} / 5</span>
+                {kolamConnected.length > 0 && (
                   <button
-                    key={d.id}
-                    onPointerEnter={() => isDragging.current && handleDotTouch(d.id)}
-                    onPointerDown={() => handleDotTouch(d.id)}
-                    style={{ left: `${d.x - 14}px`, top: `${d.y - 14}px` }}
-                    className={`absolute w-7 h-7 rounded-full flex items-center justify-center transition-transform cursor-pointer ${
-                      kolamConnected.includes(d.id) ? 'scale-125' : 'hover:scale-110'
-                    }`}
-                    aria-label={`Dot ${d.id}`}
-                    id={`kolam-dot-${d.id}`}
+                    type="button"
+                    onClick={() => {
+                      setKolamConnected([]);
+                      audio.playTear(0.5);
+                    }}
+                    className="ml-2 underline text-[#7C1E13] hover:text-[#B4271F] cursor-pointer"
+                    id="threshold-reset-kolam-btn"
                   >
-                    <div
-                      className={`w-3.5 h-3.5 rounded-full ${
-                        kolamConnected.includes(d.id)
-                          ? 'bg-[#B4271F] ring-2 ring-[#DFA327] shadow-[0_0_8px_#DFA327]'
-                          : 'bg-[#7C1E13]/60'
-                      }`}
-                    />
+                    {lang === 'hi' ? 'पुनः बनाएं' : 'Reset'}
                   </button>
-                ))}
+                )}
               </div>
 
               {/* Quick Bypass Link */}

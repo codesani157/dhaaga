@@ -2,5 +2,7 @@
   "name": "Dhaaga",
   "description": "A rakhi you actually tie, that travels as a link with zero backend, URL compression, hand-recorded tying physics, and full cultural rituals.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
