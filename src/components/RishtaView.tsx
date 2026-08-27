@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { RISHTAS } from '../data/rishtas';
 import { RishtaInfo } from '../types';
 import { audio } from '../core/audio';
-import { Card3DTilt } from './Card3DTilt';
 import { ArrowRight, UserCheck, Sparkles } from 'lucide-react';
 
 interface RishtaViewProps {
@@ -41,7 +40,7 @@ export const RishtaView: React.FC<RishtaViewProps> = ({
   const currentRishta = RISHTAS.find((r) => r.id === selectedRishtaId) || RISHTAS[0];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 perspective-1200">
+    <div className="max-w-5xl mx-auto px-4 py-8">
       {/* Title & Stage Guide */}
       <div className="text-center mb-8">
         <span className="text-xs font-mono uppercase tracking-widest text-[#9C5A2D]">
@@ -57,56 +56,48 @@ export const RishtaView: React.FC<RishtaViewProps> = ({
         </p>
       </div>
 
-      {/* 14 Rishtas Vintage Album Grid with 3D Tilt Cards */}
+      {/* 14 Rishtas Vintage Album Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
         {RISHTAS.map((rishta) => {
           const isSelected = rishta.id === selectedRishtaId;
           return (
-            <Card3DTilt
+            <button
               key={rishta.id}
-              maxTilt={8}
-              perspective={800}
-              scaleHover={1.03}
-              enableGlare={true}
-              className="h-36 sm:h-38"
+              type="button"
+              onClick={() => handleRishtaClick(rishta.id)}
+              className={`w-full h-36 sm:h-38 p-3.5 border-2 rounded-xs text-left transition-all cursor-pointer relative flex flex-col justify-between ${
+                isSelected
+                  ? 'bg-[#FBF6EA] border-[#B4271F] shadow-[3px_3px_0px_#B4271F]'
+                  : 'bg-[#F1E3CB]/70 border-[#231C17]/30 hover:border-[#231C17] hover:bg-[#FBF6EA]'
+              }`}
+              id={`rishta-card-${rishta.id}`}
             >
-              <button
-                type="button"
-                onClick={() => handleRishtaClick(rishta.id)}
-                className={`w-full h-full p-3.5 border-2 rounded-xs text-left transition-all cursor-pointer relative flex flex-col justify-between ${
-                  isSelected
-                    ? 'bg-[#FBF6EA] border-[#B4271F] shadow-[3px_3px_0px_#B4271F]'
-                    : 'bg-[#F1E3CB]/70 border-[#231C17]/30 hover:border-[#231C17] hover:bg-[#FBF6EA]'
-                }`}
-                id={`rishta-card-${rishta.id}`}
-              >
-                {/* Photo corner accents */}
-                <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-[#7A5030]" />
-                <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t-2 border-r-2 border-[#7A5030]" />
-                <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b-2 border-l-2 border-[#7A5030]" />
-                <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-[#7A5030]" />
+              {/* Photo corner accents */}
+              <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-[#7A5030]" />
+              <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t-2 border-r-2 border-[#7A5030]" />
+              <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b-2 border-l-2 border-[#7A5030]" />
+              <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-[#7A5030]" />
 
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono text-[#9C5A2D] font-semibold">#{rishta.id + 1}</span>
-                    {isSelected && <UserCheck className="w-4 h-4 text-[#B4271F]" />}
-                  </div>
-                  <h3 className="font-display font-bold text-sm sm:text-base text-[#231C17] leading-tight">
-                    {lang === 'hi' ? rishta.title_hi : rishta.title_en}
-                  </h3>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-[#9C5A2D] font-semibold">#{rishta.id + 1}</span>
+                  {isSelected && <UserCheck className="w-4 h-4 text-[#B4271F]" />}
                 </div>
+                <h3 className="font-display font-bold text-sm sm:text-base text-[#231C17] leading-tight">
+                  {lang === 'hi' ? rishta.title_hi : rishta.title_en}
+                </h3>
+              </div>
 
-                <p className="text-[11px] font-serif text-[#231C17]/70 line-clamp-2 leading-snug">
-                  {lang === 'hi' ? rishta.desc_hi : rishta.desc_en}
-                </p>
-              </button>
-            </Card3DTilt>
+              <p className="text-[11px] font-serif text-[#231C17]/70 line-clamp-2 leading-snug">
+                {lang === 'hi' ? rishta.desc_hi : rishta.desc_en}
+              </p>
+            </button>
           );
         })}
       </div>
 
-      {/* Names Form & Next Step Bar with 3D Card */}
-      <Card3DTilt maxTilt={4} perspective={1000} enableGlare={false} className="max-w-2xl mx-auto">
+      {/* Names Form & Next Step Bar */}
+      <div className="max-w-2xl mx-auto">
         <form
           onSubmit={handleProceed}
           className="bg-[#FBF6EA] border-2 border-[#231C17] p-5 sm:p-6 rounded-xs shadow-[4px_4px_0px_#231C17] space-y-4"
@@ -166,7 +157,7 @@ export const RishtaView: React.FC<RishtaViewProps> = ({
             </button>
           </div>
         </form>
-      </Card3DTilt>
+      </div>
     </div>
   );
 };

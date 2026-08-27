@@ -6,8 +6,6 @@ import { GestureReplayEngine } from '../feel/replay';
 import { renderWristSVG } from '../art/wrist';
 import { renderRakhiSVG } from '../art/rakhi';
 import { renderThaalSVG } from '../art/thaal';
-import { Interactive3DRakhi } from './Interactive3DRakhi';
-import { Rakhi3DModal } from './Rakhi3DModal';
 import { MITHAI_LIST } from '../data/mithai';
 import { seedToRakhiId } from '../core/prng';
 import { audio } from '../core/audio';
@@ -23,8 +21,6 @@ import {
   VolumeX,
   Heart,
   Flame,
-  Box,
-  Maximize2,
 } from 'lucide-react';
 
 interface KholoViewProps {
@@ -37,8 +33,6 @@ interface KholoViewProps {
 export const KholoView: React.FC<KholoViewProps> = ({ payload, onSaveToPeti, onGoToReply, lang }) => {
   // Stages: 'envelope' -> 'tear' -> 'rasm' -> 'replay' -> 'letter' -> 'done'
   const [stage, setStage] = useState<'envelope' | 'tear' | 'rasm' | 'replay' | 'letter' | 'done'>('envelope');
-  const [show3DModal, setShow3DModal] = useState<boolean>(false);
-  const [replayIn3D, setReplayIn3D] = useState<boolean>(false);
 
   // Rasm sub-steps
   const [aartiRotations, setAartiRotations] = useState(0);
@@ -577,21 +571,6 @@ export const KholoView: React.FC<KholoViewProps> = ({ payload, onSaveToPeti, onG
                 >
                   {replaySpeed === 0.5 ? (lang === 'hi' ? '0.5x' : '0.5x') : '1.0x'}
                 </button>
-
-                {/* 3D Touch Inspector button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShow3DModal(true);
-                    audio.playSitar();
-                  }}
-                  className="min-h-[38px] px-2.5 py-1 bg-[#F1E3CB] border border-[#231C17] hover:bg-[#EFE3CF] text-[#B4271F] font-bold rounded-xs flex items-center gap-1 cursor-pointer"
-                  id="replay-3d-inspect-btn"
-                  title="3D स्पर्श"
-                >
-                  <Box className="w-3.5 h-3.5 text-[#DFA327]" />
-                  <span>3D</span>
-                </button>
               </div>
 
               <button
@@ -686,14 +665,6 @@ export const KholoView: React.FC<KholoViewProps> = ({ payload, onSaveToPeti, onG
           </div>
         )}
       </div>
-
-      {/* 3D Fullscreen Inspector Modal */}
-      <Rakhi3DModal
-        isOpen={show3DModal}
-        onClose={() => setShow3DModal(false)}
-        config={payload.k || { d: 0, c: 0, p: [0], s: 108 }}
-        lang={lang}
-      />
     </div>
   );
 };

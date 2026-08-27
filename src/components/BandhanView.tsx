@@ -126,6 +126,16 @@ export const BandhanView: React.FC<BandhanViewProps> = ({
     return () => clearInterval(interval);
   }, [petals.length]);
 
+  // State and Synchronous Refs for Cross-Element Gesture Tracking
+  const activeHandleRef = useRef<'left' | 'right' | null>(null);
+  const isTiedRef = useRef<boolean>(isTied);
+  isTiedRef.current = isTied;
+
+  const setActiveHandle = (handle: 'left' | 'right' | null) => {
+    activeHandleRef.current = handle;
+    setActiveDragHandle(handle);
+  };
+
   // Convert client pointer to 440 x 320 SVG space
   const getSvgCoords = useCallback((clientX: number, clientY: number) => {
     if (!containerRef.current) return { x: 210, y: 160 };
@@ -138,33 +148,164 @@ export const BandhanView: React.FC<BandhanViewProps> = ({
     };
   }, []);
 
-  // Pointer drag events on interactive thread handles
+  // Complete and Save Gesture
+  const handleCompleteTying = useCallback(() => {
+    if (!engineRef.current) return;
+    setIsTied(true);
+    isTiedRef.current = true;
+    setCurrentStage(TyingStage.DOUBLE_KNOT);
+    audio.playKnot();
+    audio.playGhungroo(1.2);
+
+    const quantized = quantizeGesture(
+      engineRef.current.recordedPoints,
+      { width: 440, height: 320, left: 0, top: 0 },
+      3
+    );
+    onSaveGesture(quantized);
+  }, [onSaveGesture]);
+
+  // Comprehensive Native Touch Listeners with passive: false for explicit event cancellation & multi-element gesture continuity
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleNativeTouchStart = (e: TouchEvent) => {
+      if (isTiedRef.current || !engineRef.current || e.touches.length === 0) return;
+
+      // Explicit event cancellation to prevent mobile viewport panning / scrolling
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      const touch = e.touches[0];
+      const { x, y } = getSvgCoords(touch.clientX, touch.clientY);
+      const engine = engineRef.current;
+
+      const distL = Math.hypot(x - engine.leftHandle.x, y - engine.leftHandle.y);
+      const distR = Math.hypot(x - engine.rightHandle.x, y - engine.rightHandle.y);
+
+      let targetHandle: 'left' | 'right';
+      if (distL <= 60 && distL <= distR) {
+        targetHandle = 'left';
+      } else if (distR <= 60) {
+        targetHandle = 'right';
+      } else if (x < engine.wristCenterX) {
+        targetHandle = 'left';
+      } else {
+        targetHandle = 'right';
+      }
+
+      setActiveHandle(targetHandle);
+      engine.updateDragHandle(targetHandle, x, y);
+      setCurrentStage(engine.stage);
+
+      if (engine.stage >= TyingStage.DOUBLE_KNOT && !isTiedRef.current) {
+        handleCompleteTying();
+      }
+    };
+
+    const handleNativeTouchMove = (e: TouchEvent) => {
+      if (isTiedRef.current || !engineRef.current || !activeHandleRef.current || e.touches.length === 0) return;
+
+      // Explicit event cancellation across multi-element touch drag
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      const touch = e.touches[0];
+      const { x, y } = getSvgCoords(touch.clientX, touch.clientY);
+      const engine = engineRef.current;
+
+      engine.updateDragHandle(activeHandleRef.current, x, y);
+      setCurrentStage(engine.stage);
+
+      if (engine.stage >= TyingStage.DOUBLE_KNOT && !isTiedRef.current) {
+        handleCompleteTying();
+      }
+    };
+
+    const handleNativeTouchEnd = (e: TouchEvent) => {
+      if (activeHandleRef.current) {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        setActiveHandle(null);
+      }
+    };
+
+    const handleNativeTouchCancel = (e: TouchEvent) => {
+      if (activeHandleRef.current) {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        setActiveHandle(null);
+      }
+    };
+
+    // Attach listeners with passive: false to allow explicit event cancellation
+    container.addEventListener('touchstart', handleNativeTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleNativeTouchMove, { passive: false });
+    window.addEventListener('touchend', handleNativeTouchEnd, { passive: false });
+    window.addEventListener('touchcancel', handleNativeTouchCancel, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleNativeTouchStart);
+      window.removeEventListener('touchmove', handleNativeTouchMove);
+      window.removeEventListener('touchend', handleNativeTouchEnd);
+      window.removeEventListener('touchcancel', handleNativeTouchCancel);
+    };
+  }, [getSvgCoords, handleCompleteTying]);
+
+  // Pointer drag events on interactive thread handles (Desktop mouse / stylus)
   const handlePointerDown = (handle: 'left' | 'right', e: React.PointerEvent) => {
     if (isTied) return;
     e.stopPropagation();
-    setActiveDragHandle(handle);
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {}
+    setActiveHandle(handle);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!activeDragHandle || isTied || !engineRef.current) return;
+    if (!activeHandleRef.current || isTiedRef.current || !engineRef.current) return;
     const { x, y } = getSvgCoords(e.clientX, e.clientY);
-    engineRef.current.updateDragHandle(activeDragHandle, x, y);
+    engineRef.current.updateDragHandle(activeHandleRef.current, x, y);
     setCurrentStage(engineRef.current.stage);
 
-    if (engineRef.current.stage >= TyingStage.DOUBLE_KNOT && !isTied) {
+    if (engineRef.current.stage >= TyingStage.DOUBLE_KNOT && !isTiedRef.current) {
       handleCompleteTying();
     }
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    setActiveDragHandle(null);
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {}
+  const handlePointerUp = () => {
+    setActiveHandle(null);
   };
+
+  // Window-level pointer listeners for desktop mouse gesture tracking across all elements
+  useEffect(() => {
+    const onWindowPointerMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'touch' && activeHandleRef.current && !isTiedRef.current && engineRef.current) {
+        const { x, y } = getSvgCoords(e.clientX, e.clientY);
+        engineRef.current.updateDragHandle(activeHandleRef.current, x, y);
+        setCurrentStage(engineRef.current.stage);
+
+        if (engineRef.current.stage >= TyingStage.DOUBLE_KNOT && !isTiedRef.current) {
+          handleCompleteTying();
+        }
+      }
+    };
+
+    const onWindowPointerUp = (e: PointerEvent) => {
+      if (e.pointerType !== 'touch' && activeHandleRef.current) {
+        setActiveHandle(null);
+      }
+    };
+
+    window.addEventListener('pointermove', onWindowPointerMove);
+    window.addEventListener('pointerup', onWindowPointerUp);
+    return () => {
+      window.removeEventListener('pointermove', onWindowPointerMove);
+      window.removeEventListener('pointerup', onWindowPointerUp);
+    };
+  }, [getSvgCoords, handleCompleteTying]);
 
   // Step-by-Step Advance
   const handleAdvanceStep = (step: TyingStage) => {
@@ -180,22 +321,6 @@ export const BandhanView: React.FC<BandhanViewProps> = ({
       audio.playKnot();
       handleCompleteTying();
     }
-  };
-
-  // Complete and Save Gesture
-  const handleCompleteTying = () => {
-    if (!engineRef.current) return;
-    setIsTied(true);
-    setCurrentStage(TyingStage.DOUBLE_KNOT);
-    audio.playKnot();
-    audio.playGhungroo(1.2);
-
-    const quantized = quantizeGesture(
-      engineRef.current.recordedPoints,
-      { width: 440, height: 320, left: 0, top: 0 },
-      3
-    );
-    onSaveGesture(quantized);
   };
 
   // Tilak & Blessing Action

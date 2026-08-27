@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { RakhiConfig } from '../types';
 import { DORIS, CENTREPIECES, PALETTES, LATKANS, SOUND_VOICES } from '../data/materials';
 import { renderRakhiSVG } from '../art/rakhi';
-import { Interactive3DRakhi } from './Interactive3DRakhi';
-import { Rakhi3DModal } from './Rakhi3DModal';
 import { generateSeed, seedToRakhiId } from '../core/prng';
 import { audio } from '../core/audio';
-import { RefreshCw, ArrowRight, ArrowLeft, Sliders, Sparkles, Volume2, Eye, Box, Maximize2 } from 'lucide-react';
+import { RefreshCw, ArrowRight, ArrowLeft, Sliders, Sparkles, Volume2 } from 'lucide-react';
 
 interface KarkhanaViewProps {
   config: RakhiConfig;
@@ -25,8 +23,6 @@ export const KarkhanaView: React.FC<KarkhanaViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'dori' | 'centre' | 'palette' | 'latkan' | 'sound'>('dori');
   const [showMobilePreview, setShowMobilePreview] = useState(false);
-  const [is3DMode, setIs3DMode] = useState<boolean>(true);
-  const [show3DModal, setShow3DModal] = useState<boolean>(false);
 
   const totalCombinations = 12 * 16 * 8 * 20 * 6; // 184,320 authentic variants
 
@@ -116,40 +112,6 @@ export const KarkhanaView: React.FC<KarkhanaViewProps> = ({
           <div className="w-full flex items-center justify-between border-b border-[#231C17]/15 pb-2 text-xs font-mono">
             <span className="text-[#B4271F] font-bold tracking-wider">{rakhiId}</span>
             <div className="flex items-center gap-1.5">
-              {/* 3D / 2D Mode Switch */}
-              <button
-                type="button"
-                onClick={() => {
-                  setIs3DMode(!is3DMode);
-                  audio.playGhungroo();
-                }}
-                className={`flex items-center gap-1 cursor-pointer px-2 py-1 rounded-xs border text-[11px] font-serif font-bold transition-colors ${
-                  is3DMode
-                    ? 'bg-[#B4271F] text-[#FBF6EA] border-[#B4271F]'
-                    : 'bg-[#EFE3CF]/60 text-[#231C17] border-[#231C17]/20 hover:bg-[#DCC9A6]/40'
-                }`}
-                title={lang === 'hi' ? '३डी स्पर्श मोड' : '3D Tactile Mode'}
-                id="karkhana-3d-toggle-btn"
-              >
-                <Box className="w-3 h-3 text-[#DFA327]" />
-                <span>{is3DMode ? '3D' : '2D'}</span>
-              </button>
-
-              {/* 3D Inspector Modal */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShow3DModal(true);
-                  audio.playSitar();
-                }}
-                className="flex items-center gap-1 text-[#231C17] hover:text-[#B4271F] cursor-pointer px-2 py-1 rounded-xs bg-[#EFE3CF]/60 border border-[#231C17]/15 text-[11px] font-serif"
-                title={lang === 'hi' ? 'पूरा ३डी निरीक्षण' : '3D Inspector'}
-                id="karkhana-3d-inspect-btn"
-              >
-                <Maximize2 className="w-3 h-3" />
-                <span className="hidden sm:inline">{lang === 'hi' ? 'निरीक्षण' : 'Inspect'}</span>
-              </button>
-
               <button
                 type="button"
                 onClick={handleRandomHarmonious}
@@ -174,22 +136,12 @@ export const KarkhanaView: React.FC<KarkhanaViewProps> = ({
             </div>
           </div>
 
-          {/* Live Render Area: 3D Interactive or 2D Vector */}
+          {/* Live Render Area: 2D Vector */}
           <div className="w-full my-auto py-2 sm:py-4 flex items-center justify-center min-h-[260px]">
-            {is3DMode ? (
-              <Interactive3DRakhi
-                config={config}
-                size={270}
-                allowExplodedView={true}
-                interactiveMode={true}
-                lang={lang}
-              />
-            ) : (
-              <div
-                className="scale-100 sm:scale-115 md:scale-125 transition-transform"
-                dangerouslySetInnerHTML={{ __html: renderRakhiSVG(config, { size: 260 }) }}
-              />
-            )}
+            <div
+              className="scale-100 sm:scale-115 md:scale-125 transition-transform"
+              dangerouslySetInnerHTML={{ __html: renderRakhiSVG(config, { size: 260 }) }}
+            />
           </div>
 
           {/* Bottom Combination Stat */}
@@ -418,14 +370,6 @@ export const KarkhanaView: React.FC<KarkhanaViewProps> = ({
           </div>
         </div>
       </div>
-
-      {/* 3D Fullscreen Inspector Modal */}
-      <Rakhi3DModal
-        isOpen={show3DModal}
-        onClose={() => setShow3DModal(false)}
-        config={config}
-        lang={lang}
-      />
     </div>
   );
 };

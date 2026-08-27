@@ -4,8 +4,6 @@ import { decodePayload, encodePayload } from './core/codec';
 import { generateSeed } from './core/prng';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { Ambient3DCanvas } from './components/Ambient3DCanvas';
-import { Floating3DCompanion } from './components/Floating3DCompanion';
 import { ThresholdView } from './components/ThresholdView';
 import { RishtaView } from './components/RishtaView';
 import { KarkhanaView } from './components/KarkhanaView';
@@ -130,9 +128,6 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#F1E3CB] text-[#231C17] flex flex-col font-serif selection:bg-[#B4271F] selection:text-[#FBF6EA] relative overflow-x-hidden">
-      {/* 3D Sacred Ambient Diya & Zari Dust Canvas */}
-      <Ambient3DCanvas />
-
       {/* Top Header Navbar */}
       <Navbar
         currentView={currentView}
@@ -279,13 +274,6 @@ export function App() {
         {/* Self-Test Harness View */}
         {currentView === 'selftest' && <SelftestView lang={lang} />}
       </main>
-
-      {/* Floating 3D Rakhi Companion Dock (Active in Crafting Steps) */}
-      <Floating3DCompanion
-        config={rakhiConfig}
-        lang={lang}
-        showOnViews={['karkhana', 'thaal', 'bandhan', 'mohar'].includes(currentView)}
-      />
 
       {/* Non-Negotiable Honest Footer */}
       <Footer lang={lang} onNavigate={(view) => setCurrentView(view)} />

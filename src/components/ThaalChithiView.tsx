@@ -5,7 +5,6 @@ import { RISHTAS } from '../data/rishtas';
 import { renderThaalSVG } from '../art/thaal';
 import { DEVANAGARI_MAP } from '../data/strings';
 import { audio } from '../core/audio';
-import { Card3DTilt } from './Card3DTilt';
 import { ArrowRight, ArrowLeft, Check, Sparkles, Feather } from 'lucide-react';
 
 interface ThaalChithiViewProps {
@@ -118,9 +117,9 @@ export const ThaalChithiView: React.FC<ThaalChithiViewProps> = ({
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-6 items-start perspective-1200">
-        {/* Left: Thaal Brass Plate & Mithai Selector with 3D Tilt */}
-        <Card3DTilt maxTilt={6} perspective={900} enableGlare={true} className="lg:col-span-5">
+      <div className="grid lg:grid-cols-12 gap-6 items-start">
+        {/* Left: Thaal Brass Plate & Mithai Selector */}
+        <div className="lg:col-span-5">
           <div className="w-full bg-[#FBF6EA] border-2 border-[#231C17] p-5 rounded-xs shadow-[5px_5px_0px_#231C17] space-y-4">
             <div className="flex items-center justify-between border-b border-[#231C17]/15 pb-2">
               <h3 className="font-display font-bold text-base text-[#B4271F] flex items-center gap-1.5">
@@ -170,10 +169,10 @@ export const ThaalChithiView: React.FC<ThaalChithiViewProps> = ({
               </div>
             </div>
           </div>
-        </Card3DTilt>
+        </div>
 
-        {/* Right: The Deckle-Edge Chithi (Letter) with 3D Tilt */}
-        <Card3DTilt maxTilt={5} perspective={1000} enableGlare={false} className="lg:col-span-7">
+        {/* Right: The Deckle-Edge Chithi (Letter) */}
+        <div className="lg:col-span-7">
           <div className="w-full bg-[#FBF6EA] border-2 border-[#231C17] p-5 rounded-xs shadow-[5px_5px_0px_#231C17] space-y-4">
             <div className="flex items-center justify-between border-b border-[#231C17]/15 pb-2">
               <h3 className="font-display font-bold text-base text-[#B4271F] flex items-center gap-1.5">
@@ -274,7 +273,7 @@ export const ThaalChithiView: React.FC<ThaalChithiViewProps> = ({
               </button>
             </div>
           </div>
-        </Card3DTilt>
+        </div>
       </div>
     </div>
   );

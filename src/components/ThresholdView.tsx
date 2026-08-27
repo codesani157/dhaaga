@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ViewType } from '../types';
 import { audio } from '../core/audio';
-import { Card3DTilt } from './Card3DTilt';
 import { Sparkles, MailOpen, ArrowRight, Flame } from 'lucide-react';
 
 interface ThresholdViewProps {
@@ -77,6 +76,11 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
 
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
     isDragging.current = true;
+    try {
+      if (svgRef.current) {
+        svgRef.current.setPointerCapture(e.pointerId);
+      }
+    } catch {}
     const coords = getSvgCoords(e.clientX, e.clientY);
     if (coords) {
       setCurrentPointerPos(coords);
@@ -94,9 +98,16 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
     }
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e?: React.PointerEvent<SVGSVGElement>) => {
     isDragging.current = false;
     setCurrentPointerPos(null);
+    if (e && svgRef.current) {
+      try {
+        if (svgRef.current.hasPointerCapture(e.pointerId)) {
+          svgRef.current.releasePointerCapture(e.pointerId);
+        }
+      } catch {}
+    }
   };
 
   const handleDirectEnter = () => {
@@ -113,17 +124,10 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[80vh] perspective-1200">
-      {/* Threshold / Chaukhat Container (Tilt activated once opened) */}
-      <Card3DTilt
-        maxTilt={isOpen ? 5 : 0}
-        perspective={1200}
-        scaleHover={isOpen ? 1.01 : 1.0}
-        enableGlare={isOpen}
-        className="w-full max-w-xl"
-      >
-        <div className="w-full bg-[#FBF6EA] border-2 border-[#231C17] p-6 sm:p-8 rounded-sm shadow-[5px_5px_0px_#231C17] relative transition-all duration-700">
-          {/* Decorative 3D Diya Lamps at Arch Top */}
+    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[80vh]">
+      {/* Threshold / Chaukhat Container */}
+      <div className="w-full max-w-xl bg-[#FBF6EA] border-2 border-[#231C17] p-6 sm:p-8 rounded-sm shadow-[5px_5px_0px_#231C17] relative transition-all duration-700">
+        {/* Decorative Diya Lamps at Arch Top */}
           <div className="absolute -top-3.5 left-6 flex items-center gap-1 bg-[#231C17] text-[#DFA327] px-2.5 py-0.5 rounded-full border border-[#DFA327]/60 shadow-md animate-diya-glow">
             <Flame className="w-3.5 h-3.5 fill-[#DFA327]" />
             <span className="text-[10px] font-mono font-bold tracking-wider text-[#FFF2B2]">शुभ मंगल</span>
@@ -215,6 +219,15 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
                       <g
                         key={d.id}
                         className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDotTouch(d.id);
+                        }}
+                        onPointerDown={(e) => {
+                          e.stopPropagation();
+                          handleDotTouch(d.id);
+                          handlePointerDown(e);
+                        }}
                         onPointerEnter={() => {
                           if (isDragging.current) {
                             handleDotTouch(d.id);
@@ -342,7 +355,6 @@ export const ThresholdView: React.FC<ThresholdViewProps> = ({ onStartCraft, onOp
           </p>
         </div>
       </div>
-      </Card3DTilt>
 
       {/* Paste Link Modal */}
       {showPasteModal && (
